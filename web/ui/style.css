@@ -1,0 +1,284 @@
+:root {
+  --ink: #1e2a24;
+  --ink-muted: #5a6a62;
+  --paper: #faf9f6;
+  --paper-raised: #ffffff;
+  --border: #dcd8cf;
+  --accent: #2f6f4f;
+  --accent-soft: #e7f0ea;
+  --sharp: #c0562b;
+  --flat: #2b6ac0;
+  --in-tune: #2f6f4f;
+  --focus: #2f6f4f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 24px 16px 64px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+header, .transport, .report, .advanced {
+  max-width: 640px;
+  margin: 0 auto 20px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 0 0 4px;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+}
+
+.transport {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.mode-select {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 0.92rem;
+}
+
+.mode-select label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.mode-hint {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.transport-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 7px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) { filter: brightness(1.08); }
+
+button#stop {
+  background: var(--paper-raised);
+  color: var(--sharp);
+  border-color: var(--sharp);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#status {
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+/* ---- Report ---- */
+
+.report {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.report-empty {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.headline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.headline-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.headline-value.sharp { color: var(--sharp); }
+.headline-value.flat { color: var(--flat); }
+.headline-value.in-tune { color: var(--in-tune); }
+
+.headline-hint {
+  margin: 0 0 16px;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+table.note-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+table.note-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+  padding: 0 8px 6px;
+  font-weight: 600;
+}
+
+table.note-table td {
+  padding: 7px 8px;
+  border-top: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+td.note-name {
+  font-weight: 700;
+  white-space: nowrap;
+  width: 3.5em;
+}
+
+td.note-cents {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  width: 5.5em;
+}
+
+td.note-cents.sharp { color: var(--sharp); }
+td.note-cents.flat { color: var(--flat); }
+td.note-cents.in-tune { color: var(--in-tune); }
+
+td.note-meter { width: 40%; }
+
+td.note-samples {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cents-meter {
+  position: relative;
+  height: 14px;
+  background: var(--accent-soft);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.cents-meter.sharp { color: var(--sharp); }
+.cents-meter.flat { color: var(--flat); }
+.cents-meter.in-tune { color: var(--in-tune); }
+
+.cents-meter-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.cents-meter-spread {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+.cents-meter-marker {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 4px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+
+/* ---- Advanced settings ---- */
+
+.advanced {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 16px;
+}
+
+.advanced summary {
+  cursor: pointer;
+  padding: 10px 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+
+.advanced-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0 16px;
+}
+
+.advanced-body label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.advanced-body label.checkbox-field {
+  flex-direction: row;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.advanced-body input[type="number"] {
+  font: inherit;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 8em;
+}
+
+.field-hint {
+  font-weight: 400;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

@@ -1,4 +1,5 @@
 import init, { Capture, RollingSession } from '../pkg/ip_wasm.js';
+import { renderEmpty, renderReport } from './report-view.js';
 
 const REFERENCE_HZ = 440;
 const ROLLING_WINDOW_SECONDS = 5;
@@ -117,7 +118,7 @@ async function start() {
       startButton.textContent = 'Start capture';
       stopButton.textContent = 'Finish capture';
       statusEl.textContent = 'Recording…';
-      reportEl.textContent = 'Recording -- report appears when you finish.';
+      renderEmpty(reportEl, 'Recording -- report appears when you finish.');
     } else {
       statusEl.textContent = 'Listening…';
       animationFrame = requestAnimationFrame(updateReport);
@@ -131,8 +132,7 @@ async function start() {
 
 function updateReport() {
   if (session) {
-    const report = session.current_report();
-    reportEl.textContent = report ? JSON.stringify(report, null, 2) : 'Listening for a sustained note…';
+    renderReport(reportEl, session.current_report());
   }
   animationFrame = requestAnimationFrame(updateReport);
 }
@@ -150,7 +150,11 @@ function stop() {
 
   if (mode === 'capture' && session) {
     const report = session.finish(); // consumes the wasm object
-    reportEl.textContent = report ? JSON.stringify(report, null, 2) : 'No note survived gating.';
+    if (report) {
+      renderReport(reportEl, report);
+    } else {
+      renderEmpty(reportEl, 'No note survived gating.');
+    }
   }
 
   audioContext = null;
