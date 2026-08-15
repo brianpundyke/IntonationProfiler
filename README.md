@@ -6,6 +6,9 @@ passage of playing**, rather than note-by-note feedback.
 Built first for traditional Irish flute (simple-system D), but nothing in
 the design is hardcoded to that instrument.
 
+**Try it live: [brianpundyke.github.io/IntonationProfiler](https://brianpundyke.github.io/IntonationProfiler/)**
+— needs a browser with microphone access; nothing to install.
+
 ## The problem
 
 Existing tuners answer "what am I playing right now." Watching a needle
@@ -39,16 +42,21 @@ spread" and "a steady +15" are different diagnoses.
 ## Status
 
 Early and actively in development. The core aggregation pipeline and web
-app work end to end; UI is still minimal, and the instrument-specific
-config (frequency range, reference pitch) isn't yet exposed to non-developer
-users. Detection accuracy has been validated against a real flute and
-concertina across a full octave, including a browser noise-suppression
-setting that turned out to matter for weak-fundamental low notes.
+app work end to end, with a readable report view (not raw numbers) and a
+live deployment. Instrument-specific config (frequency range, reference
+pitch) isn't yet exposed in the UI — only detection tuning (clarity/power
+thresholds, window size, noise suppression) is, under "Advanced settings".
+Detection accuracy has been validated against a real flute and concertina
+across a full octave, including a browser noise-suppression setting that
+turned out to matter for weak-fundamental low notes.
 
 ## Try it
 
 All processing is client-side — **your audio never leaves your device.**
 No backend, static hosting only.
+
+The live deployment above is the easiest way to try it. To run it
+locally instead (e.g. for development):
 
 ```bash
 # Prerequisites
@@ -62,6 +70,9 @@ cargo install wasm-bindgen-cli --version 0.2.127   # must match crates/ip-wasm/C
 python3 -m http.server 8123 --directory web
 # open http://localhost:8123/ in a browser with a microphone
 ```
+
+Pushes to `main` auto-deploy to GitHub Pages via
+[`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
 
 ## Project layout
 
