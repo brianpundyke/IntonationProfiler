@@ -1,0 +1,7 @@
+[package]
+name = "ip-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+pitch-detection = "0.3.0"

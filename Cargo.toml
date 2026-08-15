@@ -1,0 +1,3 @@
+[workspace]
+resolver = "2"
+members = ["crates/ip-core", "crates/ip-wasm"]

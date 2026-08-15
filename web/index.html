@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Intonation Profiler</title>
+</head>
+<body>
+  <h1>Intonation Profiler</h1>
+  <p>Rolling 5-second aggregate intonation report. Your audio never leaves this device.</p>
+  <p>
+    <label>Clarity threshold (how strong a pitch match has to be to count at all -- lower if a note never registers) <input id="clarity-threshold" type="number" step="0.05" min="0" max="1" value="0.9" /></label>
+    <label>Power threshold <input id="power-threshold" type="number" step="0.5" min="0" value="5" /></label>
+    <label>Window size, samples (bigger helps weak low notes, at the cost of latency) <input id="window-size" type="number" step="1024" min="512" value="4096" /></label>
+  </p>
+  <p>
+    <label><input id="debug" type="checkbox" /> Debug: log raw per-window detections to console</label>
+  </p>
+  <p>
+    <label><input id="noise-suppression" type="checkbox" checked /> Browser noise suppression (confirmed to matter for weak-fundamental low notes -- turn off only if it seems to distort a reading)</label>
+  </p>
+  <p>
+    <label><input type="radio" name="mode" value="rolling" checked /> Rolling (live, 5s window)</label>
+    <label><input type="radio" name="mode" value="capture" /> Capture (record a passage, then one full report)</label>
+  </p>
+  <button id="start">Start listening</button>
+  <button id="stop" disabled>Stop</button>
+  <p id="status">Idle.</p>
+  <pre id="report">No report yet.</pre>
+  <script type="module" src="ui/app.js"></script>
+</body>
+</html>
