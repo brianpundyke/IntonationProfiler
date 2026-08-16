@@ -7,6 +7,8 @@
   --accent: #2f6f4f;
   --accent-soft: #e7f0ea;
   --track-bg: #ebe8e1;
+  --tolerance-zone: #c7e6d3;
+  --tolerance-zone-border: #8fbf9e;
   --sharp: #c0562b;
   --flat: #2b6ac0;
   /* Deliberately neutral, not a third saturated color -- "needs
@@ -237,7 +239,9 @@ td.note-samples {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: var(--accent-soft);
+  background: var(--tolerance-zone);
+  border-left: 1px solid var(--tolerance-zone-border);
+  border-right: 1px solid var(--tolerance-zone-border);
 }
 
 .cents-meter-center {
