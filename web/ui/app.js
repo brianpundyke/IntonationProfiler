@@ -35,8 +35,13 @@ async function start() {
   statusEl.textContent = 'Requesting microphone…';
 
   try {
-    await init();
-
+    // Request the mic first, before anything else async -- both so the
+    // status message is accurate (this used to say "Requesting
+    // microphone" while actually still loading the wasm module first,
+    // which muddies troubleshooting a stuck permission prompt), and so
+    // the click's user-activation is spent on the permission request
+    // itself rather than on an unrelated load first.
+    //
     // echoCancellation/autoGainControl stay off regardless -- this is
     // specifically testing whether the browser's noise suppression helps
     // a weak-fundamental note the raw signal doesn't detect cleanly.
@@ -48,6 +53,9 @@ async function start() {
         autoGainControl: false,
       },
     });
+
+    statusEl.textContent = 'Loading…';
+    await init();
 
     audioContext = new AudioContext();
     await audioContext.audioWorklet.addModule('worklet/capture-processor.js');
