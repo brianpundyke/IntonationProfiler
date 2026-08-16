@@ -16,8 +16,11 @@ function noteSortKey(noteName) {
 // are unaffected. User-adjustable (a flute realistically drifts a little
 // with breath pressure and embouchure; how much of that is "a problem"
 // varies by player), so this is threaded in from the caller rather than
-// fixed here.
-export const DEFAULT_TOLERANCE_CENTS = 2;
+// fixed here. 8 cents ~= the practical "acceptable in live ensemble
+// playing" line -- tighter than this and you're unlikely to be audibly
+// the cause of a clash with other musicians; a solo/precision-focused
+// player may still want to tighten it.
+export const DEFAULT_TOLERANCE_CENTS = 8;
 
 function direction(cents, toleranceCents) {
   if (cents > toleranceCents) return 'sharp';
