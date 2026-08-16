@@ -76,6 +76,10 @@ export function renderReport(container, report, toleranceCents = DEFAULT_TOLERAN
   const offset = report.global_offset_cents;
   const dir = direction(offset, toleranceCents);
   const headlineLabel = dir === 'in-tune' ? 'in tune' : dir;
+  // Always signed, even for "in tune" -- the word "sharp"/"flat" carries
+  // its own direction, but "in tune" doesn't, so showing only the
+  // magnitude there would silently discard which side of zero it's on.
+  const headlineSign = offset > 0 ? '+' : '';
 
   const rows = report.per_note
     .slice()
@@ -96,7 +100,7 @@ export function renderReport(container, report, toleranceCents = DEFAULT_TOLERAN
 
   container.innerHTML = (
     '<div class="headline">'
-    + `<span class="headline-value ${dir}">${Math.abs(offset).toFixed(1)}&#8202;&cent; ${headlineLabel}</span>`
+    + `<span class="headline-value ${dir}">${headlineSign}${offset.toFixed(1)}&#8202;&cent; ${headlineLabel}</span>`
     + '</div>'
     + `<p class="headline-hint">${slideHint(dir)}</p>`
     + '<table class="note-table">'
