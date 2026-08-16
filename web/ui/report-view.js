@@ -41,12 +41,15 @@ function meterPercent(cents) {
   return 50 + (clamped / METER_RANGE_CENTS) * 50;
 }
 
-function centsMeterHtml(medianCents, iqrCents, dir) {
+function centsMeterHtml(medianCents, iqrCents, dir, toleranceCents) {
   const markerPct = meterPercent(medianCents);
   const lowPct = meterPercent(medianCents - iqrCents / 2);
   const highPct = meterPercent(medianCents + iqrCents / 2);
+  const toleranceLowPct = meterPercent(-toleranceCents);
+  const toleranceHighPct = meterPercent(toleranceCents);
   return (
     `<div class="cents-meter ${dir}">`
+    + `<div class="cents-meter-tolerance" style="left:${toleranceLowPct}%; width:${toleranceHighPct - toleranceLowPct}%;"></div>`
     + '<div class="cents-meter-center"></div>'
     + `<div class="cents-meter-spread" style="left:${lowPct}%; width:${highPct - lowPct}%;"></div>`
     + `<div class="cents-meter-marker" style="left:${markerPct}%;"></div>`
@@ -91,7 +94,7 @@ export function renderReport(container, report, toleranceCents = DEFAULT_TOLERAN
         '<tr>'
         + `<td class="note-name">${escapeHtml(n.note)}</td>`
         + `<td class="note-cents ${noteDir}">${sign}${n.median_cents.toFixed(1)}&#8202;&cent;</td>`
-        + `<td class="note-meter">${centsMeterHtml(n.median_cents, n.iqr_cents, noteDir)}</td>`
+        + `<td class="note-meter">${centsMeterHtml(n.median_cents, n.iqr_cents, noteDir, toleranceCents)}</td>`
         + `<td class="note-samples">${n.sample_count}</td>`
         + '</tr>'
       );

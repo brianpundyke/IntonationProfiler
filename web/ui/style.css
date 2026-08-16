@@ -6,9 +6,14 @@
   --border: #dcd8cf;
   --accent: #2f6f4f;
   --accent-soft: #e7f0ea;
+  --track-bg: #ebe8e1;
   --sharp: #c0562b;
   --flat: #2b6ac0;
-  --in-tune: #2f6f4f;
+  /* Deliberately neutral, not a third saturated color -- "needs
+     attention" should read from contrast (any vivid color vs. quiet
+     gray), not from correctly telling orange apart from blue apart from
+     green. Reuses the same muted tone already used for secondary text. */
+  --in-tune: var(--ink-muted);
   --focus: #2f6f4f;
 }
 
@@ -215,7 +220,7 @@ td.note-samples {
 .cents-meter {
   position: relative;
   height: 14px;
-  background: var(--accent-soft);
+  background: var(--track-bg);
   border-radius: 7px;
   overflow: hidden;
 }
@@ -223,6 +228,17 @@ td.note-samples {
 .cents-meter.sharp { color: var(--sharp); }
 .cents-meter.flat { color: var(--flat); }
 .cents-meter.in-tune { color: var(--in-tune); }
+
+/* The tolerance boundary as an actual visible landmark on the bar,
+   not just an inferred rule from the marker's color -- shows where the
+   "acceptable" zone actually ends, so a marker outside it reads as "how
+   far past the edge" just from its position. */
+.cents-meter-tolerance {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--accent-soft);
+}
 
 .cents-meter-center {
   position: absolute;
