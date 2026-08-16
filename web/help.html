@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Help &amp; settings guide — Intonation Profiler</title>
+  <link rel="stylesheet" href="ui/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Help &amp; settings guide</h1>
+    <p class="tagline">What each setting does, and what to try if a note won't register.</p>
+  </header>
+
+  <p class="back-link"><a href="index.html">&larr; Back to the tuner</a></p>
+
+  <div class="help-content">
+    <h2>Modes</h2>
+    <p><strong>Rolling</strong> gives a live, continuously-updating verdict over the last few seconds
+      of playing (the window length is adjustable — see below). Good for watching the effect of
+      an embouchure or tuning-slide adjustment in real time. One thing worth knowing: a note only
+      appears in a Rolling report once it's <em>finished</em> — a single note held continuously
+      for the whole window won't show up until you stop or change pitch, since the report only
+      counts notes the gate has already closed out.</p>
+    <p><strong>Capture</strong> records for as long as you like, then produces one full report
+      covering the entire passage when you click Finish. Better for "how did that whole tune go,"
+      or for checking a single held note (since it's flushed into the report at the end
+      regardless of how long you held it).</p>
+
+    <h2>Tuning tolerance</h2>
+    <p>Deviations within this many cents are shown as "in tune" rather than sharp/flat, in both
+      the headline and the per-note table. This is purely about labels and colors — it never
+      changes the underlying numbers, and it's the one setting that updates a report live,
+      even after a Capture has already finished. The default (8&#8202;&cent;) is roughly the
+      practical "won't be audible as a clash to other musicians" line for live ensemble playing,
+      not the point of technical perfection — tighten it if you're chasing precision on your own,
+      loosen it if you mainly care whether you're a problem in a session.</p>
+
+    <h2>Advanced settings</h2>
+
+    <h3>Clarity threshold</h3>
+    <p>How strong a pitch match has to be for the detector to report a note at all — not a
+      loudness control, but a confidence one. If a specific note <em>never</em> shows up in a
+      report no matter how long you hold it, this is usually the first thing to try lowering,
+      in small steps (e.g. 0.9 &rarr; 0.75 &rarr; 0.6). Going too low is a real risk, though: the
+      detector can lock onto the wrong harmonic of the note instead of its true pitch, which
+      shows up as a confident reading for the <em>wrong</em> note name rather than an obviously
+      broken one. If lowering this makes a note appear as something else entirely (an octave
+      or a fifth away from what you played), that's the sign you've gone too far — bring it back
+      up and look at window size instead.</p>
+
+    <h3>Power threshold</h3>
+    <p>The signal level below which a window is treated as silence. Rarely needs adjusting —
+      mostly relevant if you're in an unusually noisy or unusually quiet room. If you suspect
+      this is the issue, turn on Debug logging and check the <code>rms</code> values in the
+      console: if they're consistently very low even while playing, that's more likely a
+      microphone gain/distance problem than something to fix here.</p>
+
+    <h3>Window size (samples)</h3>
+    <p>How much audio the detector analyzes at once. Bigger windows give the algorithm more
+      data to find a clean, confident pitch estimate from — which matters most for low notes,
+      since a low note completes fewer full cycles within a given window than a high note does.
+      A weak-fundamental low note (a notoriously common issue on the bottom of a simple-system
+      flute) can fail to register at the default size but come through cleanly at a larger one.
+      The cost is latency: a bigger window takes a little longer for the detector to react to
+      a change. 4096 samples (the default) is a reasonable middle ground; try doubling it if a
+      low note is the specific problem.</p>
+
+    <h3>Rolling window (seconds)</h3>
+    <p>Rolling mode only — how much recent playing the live verdict is based on. Shorter reacts
+      faster to a change you just made (useful while actively adjusting something); longer
+      smooths out normal moment-to-moment variation for a steadier read. Takes effect on the
+      next Start, not live.</p>
+
+    <h3>Browser noise suppression</h3>
+    <p>On by default, and confirmed during testing to matter for weak-fundamental low notes —
+      in one real case, a bottom D that produced no detection at all with it off worked cleanly
+      once it was on. If a reading seems oddly distorted or inconsistent, it's worth trying with
+      this off as a comparison, but the default is on for good reason.</p>
+
+    <h3>Debug: log raw per-window detections to console</h3>
+    <p>Turns on a detailed log (browser DevTools console — F12, or Ctrl+Shift+K in Firefox/
+      LibreWolf) of every detection window: the raw frequency found (if any), its confidence,
+      the signal level (<code>rms</code>), and whether it fell inside the instrument's expected
+      frequency range. This is the tool for actually diagnosing a note that won't register —
+      see the troubleshooting steps below.</p>
+
+    <h2>Troubleshooting: a note never shows up in the report</h2>
+    <p>This is the order that actually worked when tracking down a real stubborn note during
+      development. Turn on Debug logging, play the problem note in isolation for a few seconds
+      (Capture mode is easiest for this), then check the console:</p>
+    <ol>
+      <li>
+        <strong>Is <code>rms</code> reasonable (not near zero) the whole time you're playing?</strong>
+        If it's consistently tiny, this is a signal-level problem, not a detection one —
+        check mic gain, distance, or try Power threshold.
+      </li>
+      <li>
+        <strong>Is <code>raw_hz</code> ever anything other than <code>none</code>?</strong>
+        If it's always <code>none</code> despite a healthy <code>rms</code>, the detector isn't
+        finding any confident periodicity at all — try Window size next (bigger), since this is
+        exactly the symptom a too-small window produces for a weak low note.
+      </li>
+      <li>
+        <strong>Is <code>raw_hz</code> present but <code>in_range=false</code>?</strong>
+        The detector found a pitch but it's outside the instrument's expected range — often a
+        sign of an octave error (it locked onto a harmonic). Lowering Clarity threshold
+        <em>won't</em> fix this and can make it worse; this points at Window size or Noise
+        suppression instead.
+      </li>
+      <li>
+        <strong>Is <code>raw_hz</code> present, roughly the right frequency, but still not
+        making it into the report?</strong>
+        Try lowering Clarity threshold in small steps, watching for the wrong-note symptom
+        described above as you go.
+      </li>
+      <li>
+        Still nothing after all of the above? Try enabling Noise suppression if it's off, or
+        increasing Window size further. In one real case it took a larger window <em>and</em>
+        noise suppression together to resolve.
+      </li>
+    </ol>
+  </div>
+
+  <p class="back-link"><a href="index.html">&larr; Back to the tuner</a></p>
+</body>
+</html>
