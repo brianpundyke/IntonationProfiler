@@ -14,7 +14,7 @@
 
   <section class="transport">
     <div class="mode-select" role="radiogroup" aria-label="Mode">
-      <label><input type="radio" name="mode" value="rolling" checked /> Rolling <span class="mode-hint">(live, 5s window)</span></label>
+      <label><input type="radio" name="mode" value="rolling" checked /> Rolling <span class="mode-hint">(live, sliding window -- see Advanced settings)</span></label>
       <label><input type="radio" name="mode" value="capture" /> Capture <span class="mode-hint">(record a passage, then one full report)</span></label>
     </div>
     <div class="transport-buttons">
@@ -53,6 +53,11 @@
         Window size (samples)
         <input id="window-size" type="number" step="1024" min="512" value="4096" />
         <span class="field-hint">Bigger helps weak low notes register, at the cost of latency.</span>
+      </label>
+      <label>
+        Rolling window (seconds)
+        <input id="rolling-window" type="number" step="1" min="1" max="30" value="5" />
+        <span class="field-hint">Rolling mode only. Shorter reacts faster to changes while playing; longer smooths out momentary variation. Takes effect on next Start.</span>
       </label>
       <label class="checkbox-field">
         <input id="noise-suppression" type="checkbox" checked />

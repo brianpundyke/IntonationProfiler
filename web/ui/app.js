@@ -2,7 +2,7 @@ import init, { Capture, RollingSession } from '../pkg/ip_wasm.js';
 import { DEFAULT_TOLERANCE_CENTS, renderEmpty, renderReport } from './report-view.js';
 
 const REFERENCE_HZ = 440;
-const ROLLING_WINDOW_SECONDS = 5;
+const DEFAULT_ROLLING_WINDOW_SECONDS = 5;
 
 let audioContext = null;
 // `session` is either a RollingSession or a Capture -- both expose the
@@ -27,6 +27,7 @@ const reportEl = document.getElementById('report');
 const clarityThresholdInput = document.getElementById('clarity-threshold');
 const powerThresholdInput = document.getElementById('power-threshold');
 const windowSizeInput = document.getElementById('window-size');
+const rollingWindowInput = document.getElementById('rolling-window');
 const debugCheckbox = document.getElementById('debug');
 const noiseSuppressionCheckbox = document.getElementById('noise-suppression');
 const toleranceInput = document.getElementById('tuning-tolerance');
@@ -84,13 +85,17 @@ async function start() {
     const powerArg = Number.isFinite(powerThreshold) ? powerThreshold : undefined;
     const windowSizeArg = Number.isFinite(windowSize) ? windowSize : undefined;
 
+    const rollingWindow = parseFloat(rollingWindowInput.value);
+    const rollingWindowSeconds =
+      Number.isFinite(rollingWindow) && rollingWindow > 0 ? rollingWindow : DEFAULT_ROLLING_WINDOW_SECONDS;
+
     session =
       mode === 'capture'
         ? new Capture(audioContext.sampleRate, REFERENCE_HZ, clarityArg, powerArg, windowSizeArg)
         : new RollingSession(
             audioContext.sampleRate,
             REFERENCE_HZ,
-            ROLLING_WINDOW_SECONDS,
+            rollingWindowSeconds,
             clarityArg,
             powerArg,
             windowSizeArg,
