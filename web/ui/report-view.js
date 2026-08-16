@@ -11,12 +11,17 @@ function noteSortKey(noteName) {
   return parseInt(octave, 10) * 12 + (PITCH_CLASS_ORDER[pitchClass] ?? 0);
 }
 
-// A small, fixed threshold below which "sharp"/"flat" would overstate a
-// deviation nobody can actually hear (human pitch discrimination is
-// roughly 5-10 cents) -- anything tighter just reads as "in tune".
-function direction(cents) {
-  if (cents > 2) return 'sharp';
-  if (cents < -2) return 'flat';
+// Deviations within `toleranceCents` read as "in tune" rather than
+// sharp/flat -- purely a labeling/color choice, the underlying numbers
+// are unaffected. User-adjustable (a flute realistically drifts a little
+// with breath pressure and embouchure; how much of that is "a problem"
+// varies by player), so this is threaded in from the caller rather than
+// fixed here.
+export const DEFAULT_TOLERANCE_CENTS = 2;
+
+function direction(cents, toleranceCents) {
+  if (cents > toleranceCents) return 'sharp';
+  if (cents < -toleranceCents) return 'flat';
   return 'in-tune';
 }
 
@@ -59,21 +64,21 @@ function slideHint(dir) {
   return 'Nicely in tune overall.';
 }
 
-export function renderReport(container, report) {
+export function renderReport(container, report, toleranceCents = DEFAULT_TOLERANCE_CENTS) {
   if (!report) {
     renderEmpty(container, 'Listening for a sustained note…');
     return;
   }
 
   const offset = report.global_offset_cents;
-  const dir = direction(offset);
+  const dir = direction(offset, toleranceCents);
   const headlineLabel = dir === 'in-tune' ? 'in tune' : dir;
 
   const rows = report.per_note
     .slice()
     .sort((a, b) => noteSortKey(a.note) - noteSortKey(b.note))
     .map((n) => {
-      const noteDir = direction(n.median_cents);
+      const noteDir = direction(n.median_cents, toleranceCents);
       const sign = n.median_cents > 0 ? '+' : '';
       return (
         '<tr>'

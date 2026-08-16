@@ -1,5 +1,5 @@
 import init, { Capture, RollingSession } from '../pkg/ip_wasm.js';
-import { renderEmpty, renderReport } from './report-view.js';
+import { DEFAULT_TOLERANCE_CENTS, renderEmpty, renderReport } from './report-view.js';
 
 const REFERENCE_HZ = 440;
 const ROLLING_WINDOW_SECONDS = 5;
@@ -14,6 +14,11 @@ let workletNode = null;
 let muteNode = null;
 let micStream = null;
 let animationFrame = null;
+// Tolerance is a pure display concern applied at render time, so changing
+// it doesn't need a running session -- re-render whatever was last shown
+// (most useful in Capture mode, where there's no ongoing render loop to
+// pick the new value up on its own).
+let lastReport = null;
 
 const startButton = document.getElementById('start');
 const stopButton = document.getElementById('stop');
@@ -24,14 +29,26 @@ const powerThresholdInput = document.getElementById('power-threshold');
 const windowSizeInput = document.getElementById('window-size');
 const debugCheckbox = document.getElementById('debug');
 const noiseSuppressionCheckbox = document.getElementById('noise-suppression');
+const toleranceInput = document.getElementById('tuning-tolerance');
 const modeInputs = document.querySelectorAll('input[name="mode"]');
+
+function getTolerance() {
+  const val = parseFloat(toleranceInput.value);
+  return Number.isFinite(val) && val >= 0 ? val : DEFAULT_TOLERANCE_CENTS;
+}
 
 startButton.addEventListener('click', start);
 stopButton.addEventListener('click', stop);
+toleranceInput.addEventListener('input', () => {
+  if (lastReport) renderReport(reportEl, lastReport, getTolerance());
+});
 
 async function start() {
   startButton.disabled = true;
   mode = document.querySelector('input[name="mode"]:checked').value;
+  lastReport = null; // don't let a stale report from a previous session
+                      // get live-re-rendered over "Recording..." if the
+                      // user tweaks tolerance before this one finishes
   statusEl.textContent = 'Requesting microphone…';
 
   try {
@@ -140,7 +157,9 @@ async function start() {
 
 function updateReport() {
   if (session) {
-    renderReport(reportEl, session.current_report());
+    const report = session.current_report();
+    if (report) lastReport = report;
+    renderReport(reportEl, report, getTolerance());
   }
   animationFrame = requestAnimationFrame(updateReport);
 }
@@ -158,8 +177,9 @@ function stop() {
 
   if (mode === 'capture' && session) {
     const report = session.finish(); // consumes the wasm object
+    lastReport = report;
     if (report) {
-      renderReport(reportEl, report);
+      renderReport(reportEl, report, getTolerance());
     } else {
       renderEmpty(reportEl, 'No note survived gating.');
     }
