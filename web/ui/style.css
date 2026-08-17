@@ -56,34 +56,37 @@ h1 {
 /* A small icon that reveals explanatory text on click -- native
    <details>/<summary>, so no extra JS: free keyboard operability, and
    consistent with the "Advanced settings" disclosure already on the
-   page, just styled as a compact icon instead of a text label. */
+   page, just styled as a compact icon instead of a text label.
+   Solid-filled circle with a plain "i" (not the Unicode (i) glyph,
+   which renders inconsistently/ambiguously across fonts) -- styled
+   after the standard "information point" symbol (e.g. UK tourist
+   information signage) for immediate, wordless recognition. */
 .info-disclosure summary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--paper-raised);
-  color: var(--ink-muted);
-  font-size: 0.72rem;
+  border: none;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
   line-height: 1;
   cursor: pointer;
   list-style: none;
+  flex-shrink: 0;
 }
 
 .info-disclosure summary::-webkit-details-marker { display: none; }
 .info-disclosure summary::marker { content: ""; }
 
-.info-disclosure summary:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
+.info-disclosure summary:hover,
 .info-disclosure[open] summary {
-  border-color: var(--accent);
-  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .info-disclosure p {
