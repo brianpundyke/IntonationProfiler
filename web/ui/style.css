@@ -46,6 +46,57 @@ h1 {
   font-size: 0.92rem;
 }
 
+.tagline-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* A small icon that reveals explanatory text on click -- native
+   <details>/<summary>, so no extra JS: free keyboard operability, and
+   consistent with the "Advanced settings" disclosure already on the
+   page, just styled as a compact icon instead of a text label. */
+.info-disclosure summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--paper-raised);
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  list-style: none;
+}
+
+.info-disclosure summary::-webkit-details-marker { display: none; }
+.info-disclosure summary::marker { content: ""; }
+
+.info-disclosure summary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.info-disclosure[open] summary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.info-disclosure p {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  max-width: 480px;
+}
+
 .header-links {
   margin: 6px 0 0;
   font-size: 0.88rem;
