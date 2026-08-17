@@ -323,10 +323,13 @@ td.note-cents.in-tune { color: var(--in-tune); }
 
 td.note-meter { width: 40%; }
 
+th.note-samples, td.note-samples {
+  text-align: center;
+}
+
 td.note-samples {
   color: var(--ink-muted);
   font-variant-numeric: tabular-nums;
-  text-align: right;
   white-space: nowrap;
 }
 

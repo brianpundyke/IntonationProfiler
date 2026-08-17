@@ -107,7 +107,7 @@ export function renderReport(container, report, toleranceCents = DEFAULT_TOLERAN
     + '</div>'
     + `<p class="headline-hint">${slideHint(dir)}</p>`
     + '<table class="note-table">'
-    + '<thead><tr><th>Note</th><th>Median</th><th>Spread</th><th>Samples</th></tr></thead>'
+    + '<thead><tr><th>Note</th><th>Median</th><th>Spread</th><th class="note-samples">Samples</th></tr></thead>'
     + `<tbody>${rows}</tbody>`
     + '</table>'
   );
